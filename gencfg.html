@@ -26,28 +26,6 @@ a:hover { text-decoration: none; color: #C00; background: #FC0; }
 	var lan="eth0";
 	var output, outputw;
 
-	function parse() {
-		var raw= document.getElementById('box').value;
-		var m=raw.match(/(tdid_\w+)/);
-		if (m) {
-			document.getElementById('tdid').value=m[0];
-		}
-		m=raw.match(/((?:[\w-]+\.)?[\w-]+\.rpz\.threatstop\.local)/);
-		if (m) {
-			document.getElementById('zone').value=m[0];
-		}
-		var m=raw.match(/(threatstop-\w+)/);
-		if (m) {
-			document.getElementById('tsigkey').value=m[0];
-		}
-		var m=raw.match(/[A-Za-z0-9+\/]+=+/);
-		if (m) {
-			document.getElementById('tsigsecret').value=m[0];
-		}
-		document.getElementById('pp').style.display='';
-		document.getElementById('pt').style.display='';
-	}
-
 	function updateiface(iface) {
 		lan=iface;
 		if (iface == 'eth0'){
@@ -110,6 +88,10 @@ a:hover { text-decoration: none; color: #C00; background: #FC0; }
 			generror("ERROR Gateway IP address invalid");
 			return;
 		}
+		if (!validate_ip(document.getElementById('dns').value, 'dns')) {
+			generror("ERROR DNS Server IP address invalid");
+			return;
+		}
 		admask=document.getElementById('ipaddr').value.split (/[.\/]/);
 		mask=admask.pop();
 		var subnet='';
@@ -154,8 +136,7 @@ a:hover { text-decoration: none; color: #C00; background: #FC0; }
 			generror("ERROR router not in correct subnet");
 			return;
 		}
-
-		if (document.getElementById('dhcp').checked) {
+		/*if (document.getElementById('dhcp').checked) {
 			if (!validate_ip(document.getElementById('dhcpstart').value, 'dhcps')) {
 				generror("ERROR DHCP start address invalid");
 				return;
@@ -198,34 +179,30 @@ a:hover { text-decoration: none; color: #C00; background: #FC0; }
 			else if (range<20) {
 				document.getElementById('genval').innerHTML='<span style="color: #FF2">WARNING DHCP range is very small ('+range+')</span>'
 			}
-		}
+		}*/
 		document.getElementById('genval').innerHTML='<span style="color: #2F2">Network configuration validated successfully</span>'
-		output="#ThreatSTOP Start\nTDID='"+
-			document.getElementById('tdid').value+"'\nZONE='"+
-			document.getElementById('zone').value+"'\nTSIGKEY='"+
-			document.getElementById('tsigkey').value+"'\nTSIGSEC='"+
-			document.getElementById('tsigsecret').value+"'\n#ThreatSTOP End\n"
-		output+="#DHCPCD Start\ninterface "+lan+
+		output="#DHCPCD Start\ninterface "+lan+
 			"\nstatic ip_address="+document.getElementById('ipaddr').value+
 			"\nstatic routers="+document.getElementById('gwy').value+
-			"\nstatic domain_name_servers=127.0.0.1\n#DHCPCD End\n"
-		if (document.getElementById('dhcp').checked) {
+			"\nstatic domain_name_servers="+document.getElementById('dns').value+"\n#DHCPCD End\n"
+		/*if (document.getElementById('dhcp').checked) {
 			output+="#DHCPD Start\nsubnet "+subnet+" netmask "+netmask+
 				" {\n    range "+document.getElementById('dhcpstart').value+" "+
 			document.getElementById('dhcpend').value+";\n    option broadcast-address "+
 			bcaddr+";\n    option routers "+document.getElementById('gwy').value +
 			";\n    option domain-name \"pi\";\n    option domain-name-servers "+
 			admask.join(".")+";\n}\n#DHCPD End\n"
-		}
+		}*/
 		document.getElementById('output').innerHTML='<pre>'+output+'</pre>'; 
 		if (lan == 'wlan0') {
 			outputw="#WPA Start\nctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\n"+
 				"update_config=1\ncountry=US\n\nnetwork={\n"+
 				'    ssid="'+document.getElementById('wifissid').value +'"\n    psk="'+
 				document.getElementById('wifisecret').value +'"\n    key_mgmt=WPA-PSK\n}\n#WPA End\n'
+			document.getElementById('wpa').style.display='';
+			document.getElementById('outputw').innerHTML='<pre>'+outputw+'</pre>';
 		}
-		document.getElementById('wpa').style.display='';
-		document.getElementById('outputw').innerHTML='<pre>'+outputw+'</pre>'; 
+
 	}
 
 	function download(data,filename) {
@@ -271,6 +248,9 @@ a:hover { text-decoration: none; color: #C00; background: #FC0; }
 			<tr><td>Default Gateway</td><td>
 			<input type="text" name="gwy" id="gwy" size="20" onblur="validate_ip(this.value, 'gw')" /></td>
 			<td id="gwval">Not validated</td></tr>
+			<tr><td>DNS Server</td><td>
+			<input type="text" name="dns" id="dns" size="20" onblur="validate_ip(this.value, 'dns')" /></td>
+			<td id="dnsval">Not validated</td></tr>
 			<tr id="wifissidrow" style="display:none"><td>Wifi SSID</td><td>
 			<input type="text" name="wifissid" id="wifissid" size="20" /></td><td></td></tr>
 			<tr id="wifisecretrow" style="display:none"><td>Wifi Secret </td><td>
