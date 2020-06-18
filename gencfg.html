@@ -48,6 +48,14 @@ a:hover { text-decoration: none; color: #C00; background: #FC0; }
 	}
 
 	function validate_ip(value, rescell) {
+		if (rescell == 'dns') {
+			var list=value.split(/\s+/);
+			if (list.length>1) {
+				for (var i=0;i<list.length;i++) {
+					if (!validate_ip(list[i], rescell)) return false;
+				}
+			}
+		}
 		var m=value.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)(?:\/(\d+))?$/);
 		if (m) {
 			for (var i=1; i<5; i++) {
@@ -230,14 +238,15 @@ a:hover { text-decoration: none; color: #C00; background: #FC0; }
 	<div id="body">
 		<h1>Create Configuration</h1>
 		
-		<p>Create a netcfg.txt config file for your pi image </p>
+		<p>Create a netcfg.txt config file (and possibly a wpa_supplicant.conf too) for your pi image </p>
 
 		<h2>Step 1. Enter Network config</h2>
 		<p>Put in the desired static IP address/mask and default gateway. Then
 		click "Generate"</p>
 		<p>If you have a pi with wifi (pi zeroW, pi 3+ or pi 4) you can set the
 		intrerface type to wifi and then set an SSID and PSK secret. </p>
-		<p>Note: the pi will only use one interface (eth0 or wlan0) for the first boot.</p>
+		<p>Note: the pi will only use one interface (eth0 or wlan0) for the first boot. 
+		DNS server IPs should be split by spaces</p>
 		<table>
 			<tr><td>Ethernet or Wifi </td><td>
 			<label><input type="radio" name="iface" value="eth0" checked="checked" onclick="updateiface(this.value)" />Ethernet</label>
@@ -249,7 +258,7 @@ a:hover { text-decoration: none; color: #C00; background: #FC0; }
 			<input type="text" name="gwy" id="gwy" size="20" onblur="validate_ip(this.value, 'gw')" /></td>
 			<td id="gwval">Not validated</td></tr>
 			<tr><td>DNS Server</td><td>
-			<input type="text" name="dns" id="dns" size="20" onblur="validate_ip(this.value, 'dns')" /></td>
+			<input type="text" name="dns" id="dns" size="30" onblur="validate_ip(this.value, 'dns')" /></td>
 			<td id="dnsval">Not validated</td></tr>
 			<tr id="wifissidrow" style="display:none"><td>Wifi SSID</td><td>
 			<input type="text" name="wifissid" id="wifissid" size="20" /></td><td></td></tr>
