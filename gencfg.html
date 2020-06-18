@@ -54,6 +54,7 @@ a:hover { text-decoration: none; color: #C00; background: #FC0; }
 				for (var i=0;i<list.length;i++) {
 					if (!validate_ip(list[i], rescell)) return false;
 				}
+				return true;
 			}
 		}
 		var m=value.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)(?:\/(\d+))?$/);
