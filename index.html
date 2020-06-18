@@ -31,9 +31,57 @@ a:hover { text-decoration: none; color: #C00; background: #FC0; }
     <body >
     <div id="page">
  <div id="header">
- <h1>Francis Code Pages</h1>
+ <h1>Francis' Code Pages</h1>
+ <p>DNS, Raspberry Pi, Security and more</p>
 </div>
  <div id="body">
+	<h1>Pi-gen tweaks</h1>
+	 <p>A pi4B (or 3B+ in many cases) has quite enough power to make a decent 
+	 application server for home or small office use. For this application 
+	 you don't want most of the standard Raspbian/PiOS you just want 
+	 Raspbian-lite. </p>
+	 <p>But you also probably want to run the thing headless which means 
+	 you need to have it start up with a known IP address, SSH enabled, maybe 
+	 WiFi enabled. And if you're thinking of giving them to your friends or 
+	 selling them to customers then you need an image that works right out of 
+	 the box with no tweaks.</p>
+	 <p>I've been working for a while on a system to use the Pi-gen project 
+	 (<a href="https://github.com/RPi-Distro/pi-gen">https://github.com/RPi-Distro/pi-gen</a> ) 
+	 code to do exactly this. There are currently three repos.</p>
+	 <p>The first repo contains some utilities that allow you to manage your 
+	 customizations to pi-gen without overwriting the pi-gen files themselves 
+	 when you aren't building the image.</p>
+	 <p> I learned the hard way that developing 
+	 in a clone of the pi-gen repo was a total mess. In addition to the difficulty 
+	 of tracking down which files had changed and where they were 
+	 (was it stage1/01-sys-tweaks or stage2/02-net-tweaks or ?) there were two 
+	 cases where I regularly had problems. The first is when the pi-gen people 
+	 update their repo. Updating your copy when the files have been changed tends 
+	 to leave you in merge hell as things don't quite build any more - or worse 
+	 they build but don't actually work when you try to boot the result. The second 
+	 is when you want to build images for two or more different servers, like say 
+	 a docker server a DNS/DHCP server and a web/email server. You end up cloning 
+	 the repo multiple times and as I found out, once you've built a bunch of 
+	 images (particularly if you use the docker build version) it is amazingly 
+	 easy to run out of disk space.</p>
+	 <p>You can get this repo at 
+	 <a href="https://github.com/FrancisTurner/pi-gen-utils">https://github.com/FrancisTurner/pi-gen-utils</a></p>
+	 <p>Basic usage instructions are in the README.md</p>
+	 <p>The other two use that repo to build a basic lite server that you can 
+	 give a static IP address in a file in the /boot/ partition and one that 
+	 builds on that to create a base docker server with docker-compose installed.</p>
+	 <p>Both of these seem like good foundations for others to build their servers 
+	 of choice on.</p>
+	 <ul>
+		 <li><a href="https://github.com/FrancisTurner/pi-gen-baselite">https://github.com/FrancisTurner/pi-gen-baselite</a></li>
+		 <li><a href="https://github.com/FrancisTurner/pi-gen-docker">https://github.com/FrancisTurner/pi-gen-docker</a></li>
+	 </ul>
+	 <p>These should work on any pi, though I haven't checked it on anything too old yet.</p>
+	<h1>Boot File Generator</h1>
+	<p>The <a href="gencfg.html">Boot File Generator</a> is a page to generate 
+	the netcfg.txt and optional wpa_supplicant.conf
+	that you can use with the above images</p>
+	<h1>More</h1>
 	<p>More stull will show up here soon. </p>
 
 
