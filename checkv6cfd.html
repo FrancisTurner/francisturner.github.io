@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Francis' Code Pages</title>
+	<style type="text/css" media="screen">
+body { background: #e7e7e7; font-family: Open Sans, sans-serif; font-size: 11pt; }
+#page { background: #ffffff; margin: 50px; border: 2px solid #c0c0c0; padding: 10px; }
+#header {
+  background: rgb(30, 60, 114);
+  border: 2px solid #7590ae;
+  text-align: center;
+  padding: 10px;
+  color: #ffffff;
+}
+#header h1 { color: #ffffff; padding-top: 20px; padding-bottom: 20px;}
+#body { padding: 10px; }
+span.tt { font-family: monospace; }
+span.bold { font-weight: bold; }
+a:link { text-decoration: none; font-weight: bold; color: #C00; background: #ffc; }
+a:visited { text-decoration: none; font-weight: bold; color: #999; background: #ffc; }
+a:active { text-decoration: none; font-weight: bold; color: #F00; background: #FC0; }
+a:hover { text-decoration: none; color: #C00; background: #FC0; }
+.imgframe
+    { background:rgb(30, 60, 114);
+    padding:2px;
+    border:1px solid #999; } 
+</style>
+
+    </head>
+    <body >
+    <div id="page">
+ <div id="header">
+ <h1>ARMv6 Cloudflared Auto-update script</h1>
+ <p>Utility to keep cloudflared updated on Raspberry Pi Zeros and other armv6 architecure devices</p>
+</div>
+ <div id="body">
+	<h1>Pi Zeros and Cloudflared</h1>
+	 <p>A pi zero (or zero W or old Pi v 1) can host a mostly static webserver 
+	 just fine, and using Cloudflare's <b>cloudflared</b> utility and a 
+	 Cloudflare account. The utility can also act as a DoH proxy and do some
+	 other things as well (and probably more will be added over time). 
+	 Unfortunately there's a problem which is that
+	 Cloudflare builds for the ARM v7 architecture not the v6 and so if you
+	 try and run the official binary on your Pi Zero you get a very helpful</p>
+	 <pre>Segment fault</pre>
+	 <p>There is a <a href="https://github.com/cloudflare/cloudflared/issues/38#issuecomment-533908555">
+	 bug report with many comments</a> on the problem at the cloudflared github site that include
+	 instructions on how to build from source with the right architecture flag.</p>
+	 <p>However a nice Canadian gentleman called Darren Hobin (who provided the build instructions) 
+	 has been building v6 binaries and storing the results at this page: </p>
+	 <p><a href="https://hobin.ca/cloudflared/">https://hobin.ca/cloudflared/</a></p>
+	 <p>The only problem is that you have to manually update the binary in order to keep up
+	 with the latest cloudflare official version with it's new features and bug fixes</p>
+	 <h1>Updater scripr</h1>
+	 <p>This script (<a href="https://gist.github.com/FrancisTurner/f8d53c40a201bc28328a0e8742d710dc#file-checkv6cfd-sh">gist link</a>) 
+	 checks the page above for the latest version and compares it with the version of
+	 <b>/usr/local/bin/cloudflared</b>. If the versions differ (or the attempt results in a 
+	 failure (e.g. a segfault)) then the script downloads the latest version, checks
+	 the SHA256 checksum and (presuming it passes) updates <b>/usr/local/bin/cloudflared</b>.
+	 and finally restarts the systemd service if one was installed.</p>
+	 <p>Note that if you run cloudflared service install command it will create an updater systemd 
+	 service and timer which you will want to disable them because they will cause
+	 the working cloudflared to be replaced with a v7 one that doesn't work on
+	 a Pi Zero.</p>
+</div></div>
+	<p style=" margin: 50px;  padding: 10px;">
+	&copy; 2020 Francis Turner<br>
+	</p>
+</body>
