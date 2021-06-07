@@ -52,8 +52,9 @@ a:hover { text-decoration: none; color: #C00; background: #FC0; }
 	 <p><a href="https://hobin.ca/cloudflared/">https://hobin.ca/cloudflared/</a></p>
 	 <p>The only problem is that you have to manually update the binary in order to keep up
 	 with the latest cloudflare official version with it's new features and bug fixes</p>
-	 <h1>Updater scripr</h1>
-	 <p>This script (<a href="https://gist.github.com/FrancisTurner/f8d53c40a201bc28328a0e8742d710dc#file-checkv6cfd-sh">gist link</a>) 
+	 <h1>Updater script</h1>
+	 <p>This script (<a href="https://github.com/FrancisTurner/francisturner.github.io/blob/master/checkv6cfd.sh">Github link</a>,
+	 <a href="https://gist.github.com/FrancisTurner/f8d53c40a201bc28328a0e8742d710dc#file-checkv6cfd-sh">gist link</a>) 
 	 checks the page above for the latest version and compares it with the version of
 	 <b>/usr/local/bin/cloudflared</b>. If the versions differ (or the attempt results in a 
 	 failure (e.g. a segfault)) then the script downloads the latest version, checks
@@ -63,8 +64,23 @@ a:hover { text-decoration: none; color: #C00; background: #FC0; }
 	 service and timer which you will want to disable them because they will cause
 	 the working cloudflared to be replaced with a v7 one that doesn't work on
 	 a Pi Zero.</p>
+	 <pre>
+		 sudo systemctl stop cloudflared-updater
+		 sudo systemctl disable cloudflared-updater
+	 </pre>
+	 <h2>Installation</h2>
+	 <pre>
+		 cd /tmp && wget https://raw.githubusercontent.com/FrancisTurner/francisturner.github.io/master/checkv6cfd.sh && chmod a+x checkv6cfd.sh 
+		 sudo mv checkv6cfd.sh /usr/local/bin
+	 </pre>
+	 <h2>Usage</h2>
+	 <p><b>sudo checkv6cfd.sh DEBUG</b> to test that it works</p>
+	 <p>Assuming that it reports something sensible add it to cron. The easiest way is 
+	 to simply make a symlink in /etc/cron.daily (see below), although you can also create a
+	 one line file in /etc/cron.d/ or in the root crontab (sudo crontab -e)</p>
+	 <pre>sudo ln -s /usr/local/bin/checkv6cfd.sh /etc/cron.daily/checkv6cfd.sh</pre>
 </div></div>
 	<p style=" margin: 50px;  padding: 10px;">
-	&copy; 2020 Francis Turner<br>
+	&copy; 2021 Francis Turner<br>
 	</p>
 </body>
